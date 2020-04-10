@@ -1,12 +1,12 @@
-Java 8
-Spring: BOOT(con Maven) - web(MVC y REST) - devtools - actuator - data-jpa(con Hibernate) - hateoas - test(JUnit5 y Mockito integrados) - AOP(con aspectJ) y logging - mail? - Security?
-Git (No olvidar usar ramas y .gitignore)
-MySQL DB
-Documentar: Swagger
-Testeo (usando TDD)
-Otras Librerias Usadas: modelmapper - jackson-databind  
-Versionar servicios de la API
-Manejo de respuestas 200, 404, ...
-Auditoria de los servicios
-Usando buenas practicas y Clean Code (SOLID Y varios patrones de diseño).
-Foto del modelo de la BD
+# To Do List
+
+RESTFul API back-end utilizando las siguentes tecnologias:
+
+  - Java 8.
+  - Modulos Spring Framework: Boot, web, data-jpa, AOP, devtools, actuator, hateoas, security.
+  - Hibernate.
+  - Base de datos MySQL.
+  - Swagger.
+  - Librerias: Modelmapper, jackson-databind, aspectJ, JUnit, Mockito.
+  
+> El proyecto fue realizado bajo el concepto de Clean Code, implementando TDD, principios SOLID, patrones de diseño y refactorizacion continua.

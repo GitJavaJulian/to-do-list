@@ -26,7 +26,7 @@ public class Usuario {
 	@Column(name = "mail_usuario")
 	private String mailUsuario;
 	@JsonManagedReference
-	@OneToMany(mappedBy = "usuario", cascade = CascadeType.DETACH)
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
 	private List<Lista> listas;
 
 	public Usuario() {

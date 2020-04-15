@@ -60,7 +60,6 @@ public class Lista {
 	}
 
 	public void addTarea(Tarea tarea) {
-		tarea.setLista(this);
 		this.tareas.add(tarea);
 	}
 

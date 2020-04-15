@@ -90,7 +90,7 @@ public class ListaService {
 
 		listaRepository.deleteById(id);
 
-		return new ResponseEntity<>("Lista eliminada", HttpStatus.ACCEPTED);
+		return new ResponseEntity<>("Lista eliminada", HttpStatus.NO_CONTENT);
 	}
 
 	public ResponseEntity<Object> actualizaLista(ListaUpdateRequestDTO listaDTO, long id) {

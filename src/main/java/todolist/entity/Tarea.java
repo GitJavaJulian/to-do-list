@@ -3,6 +3,7 @@ package todolist.entity;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,8 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "tarea")
@@ -33,9 +32,8 @@ public class Tarea {
 	private LocalTime horaRealizarTarea;
 	@Column(name = "realizada")
 	private boolean realizada;
-	@JsonBackReference
-	@ManyToOne
-	@JoinColumn(name = "id_lista")
+	@ManyToOne(cascade = CascadeType.DETACH)
+	@JoinColumn(name = "id_lista", updatable = false)
 	private Lista lista;
 
 	@Transient

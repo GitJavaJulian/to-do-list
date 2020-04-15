@@ -149,7 +149,7 @@ public class TareaService {
 			throw new CustomerNotFoundException(mensaje + id);
 		}
 
-		tareaRepository.deleteById(id);
+		tareaRepository.delete(tarea.get());
 
 		return new ResponseEntity<>("Tarea eliminada", HttpStatus.ACCEPTED);
 	}
@@ -166,7 +166,7 @@ public class TareaService {
 
 		tareaRepository.deleteAll(tareas);
 
-		return new ResponseEntity<>("Listas de Tareas eliminada", HttpStatus.ACCEPTED);
+		return new ResponseEntity<>("Listas de Tareas eliminada", HttpStatus.NO_CONTENT);
 	}
 
 	public ResponseEntity<Object> actualizaTarea(TareaActualizaCompletoRequestDTO tareaDTO, long id) {

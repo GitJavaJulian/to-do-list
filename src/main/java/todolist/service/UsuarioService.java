@@ -65,7 +65,7 @@ public class UsuarioService {
 
 		usuarioRepository.deleteById(id);
 
-		return new ResponseEntity<>("Usuario Eliminado", HttpStatus.ACCEPTED);
+		return new ResponseEntity<>("Usuario Eliminado", HttpStatus.NO_CONTENT);
 	}
 
 	public ResponseEntity<Object> actualizaUsuario(UsuarioUpdateRequestDTO usuarioDTO, long id) {

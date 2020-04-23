@@ -17,15 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import todolist.dto.TareaActualizaCompletoRequestDTO;
-import todolist.dto.TareaCreateRequestDTO;
-import todolist.dto.TareaResponseDTO;
-import todolist.dto.TareaSegunRealizacionResponseDTO;
-import todolist.dto.TareaSegunRealizacionResponseV2DTO;
-import todolist.dto.TareasDeleteRequestDTO;
-import todolist.dto.TareasPorVencerResponseDTO;
-import todolist.dto.TareasResponseDTO;
-import todolist.dto.TareasSegunFechaResponseDTO;
+import todolist.domain.dto.TareaActualizaCompletoRequestDTO;
+import todolist.domain.dto.TareaCreateRequestDTO;
+import todolist.domain.dto.TareaResponseDTO;
+import todolist.domain.dto.TareaSegunRealizacionResponseDTO;
+import todolist.domain.dto.TareaSegunRealizacionResponseV2DTO;
+import todolist.domain.dto.TareasDeleteRequestDTO;
+import todolist.domain.dto.TareasPorVencerResponseDTO;
+import todolist.domain.dto.TareasResponseDTO;
+import todolist.domain.dto.TareasSegunFechaResponseDTO;
 import todolist.service.TareaService;
 
 @RestController

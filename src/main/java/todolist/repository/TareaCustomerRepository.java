@@ -3,7 +3,7 @@ package todolist.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import todolist.entity.Tarea;
+import todolist.domain.Tarea;
 
 public interface TareaCustomerRepository {
 

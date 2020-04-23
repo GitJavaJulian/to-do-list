@@ -17,32 +17,53 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import todolist.ToDoListApplication;
-import todolist.dto.ListaCreateRequestDTO;
-import todolist.dto.ListaResponseDTO;
-import todolist.dto.ListaUpdateRequestDTO;
-import todolist.dto.ListasResponseDTO;
-import todolist.entity.Lista;
-import todolist.entity.Usuario;
+import todolist.domain.Lista;
+import todolist.domain.User;
+import todolist.domain.dto.ListaCreateRequestDTO;
+import todolist.domain.dto.ListaResponseDTO;
+import todolist.domain.dto.ListaUpdateRequestDTO;
+import todolist.domain.dto.ListasResponseDTO;
 import todolist.test.utils.RetrieveUtil;
 
 @SpringBootTest
-
+@TestMethodOrder(OrderAnnotation.class)
 class ListaControllerTest {
 
 	@Autowired
 	private RetrieveUtil retrieveUtil;
 
+	private static Lista listaExistenteEnBaseDatos;
+
+	@BeforeAll
+	private static void creaListaExistenteEnBaseDatos() {
+		listaExistenteEnBaseDatos = new Lista();
+		listaExistenteEnBaseDatos.setIdLista(1);
+		listaExistenteEnBaseDatos.setTituloLista("Trabajo");
+
+		User usuario = new User();
+		usuario.setIdUsuario(1);
+
+		listaExistenteEnBaseDatos.setUsuario(usuario);
+
+	}
+
 	@Test
+	@Order(1)
 	public void devuelveLista_idListaExiste_entoncesDevuelve_status200_JSON_DTO()
 			throws ClientProtocolException, IOException {
 
 		HttpUriRequest request = new HttpGet(
-				"http://localhost:8090/api/v1/listas/" + listaExistenteEnBaseDatos().getIdLista());
+				ToDoListApplication.TEST_HOST + "api/v1/listas/" + listaExistenteEnBaseDatos.getIdLista());
+		request.setHeader("Authorization", retrieveUtil.creaToken().getToken());
 
 		HttpResponse response = HttpClientBuilder.create().build().execute(request);
 
@@ -52,15 +73,17 @@ class ListaControllerTest {
 				ContentType.getOrDefault(response.getEntity()).getMimeType());
 
 		ListaResponseDTO resource = RetrieveUtil.retrieveResourceFromResponse(response, ListaResponseDTO.class);
-		assertThat(listaExistenteEnBaseDatos().getTituloLista(), Matchers.is(resource.getTituloLista()));
+		assertThat(listaExistenteEnBaseDatos.getTituloLista(), Matchers.is(resource.getTituloLista()));
 	}
 
 	@Test
+	@Order(2)
 	public void devuelveListasDeUsuario_usuarioExiste_entoncesDevuelve_status200_JSON_listDTO()
 			throws ClientProtocolException, IOException {
 
-		HttpUriRequest request = new HttpGet("http://localhost:8090/api/v1/usuarios/"
-				+ listaExistenteEnBaseDatos().getUsuario().getIdUsuario() + "/listas");
+		HttpUriRequest request = new HttpGet(ToDoListApplication.TEST_HOST + "api/v1/usuarios/"
+				+ listaExistenteEnBaseDatos.getUsuario().getIdUsuario() + "/listas");
+		request.setHeader("Authorization", retrieveUtil.creaToken().getToken());
 
 		HttpResponse response = HttpClientBuilder.create().build().execute(request);
 
@@ -74,24 +97,14 @@ class ListaControllerTest {
 	}
 
 	@Test
-	public void eliminaLista_listaEliminada_entoncesDevuelve_status204() throws ClientProtocolException, IOException {
-
-		HttpDelete request = new HttpDelete(
-				"http://localhost:8090/api/v1/listas/" + listaExistenteEnBaseDatos().getIdLista());
-
-		HttpResponse response = HttpClientBuilder.create().build().execute(request);
-
-		assertEquals(204, response.getStatusLine().getStatusCode());
-
-	}
-
-	@Test
+	@Order(3)
 	public void actualizaLista_listaActualizada_entoncesDevuelve_status201()
 			throws ClientProtocolException, IOException {
 
 		HttpPut request = new HttpPut(
-				"http://localhost:8090/api/v1/listas/" + listaExistenteEnBaseDatos().getIdLista());
+				ToDoListApplication.TEST_HOST + "api/v1/listas/" + listaExistenteEnBaseDatos.getIdLista());
 		request.setHeader("Content-type", "application/json");
+		request.setHeader("Authorization", retrieveUtil.creaToken().getToken());
 		request.setEntity(retrieveUtil.retrieveStringEntity(creaListaUpdateRequestDTO()));
 
 		HttpResponse response = HttpClientBuilder.create().build().execute(request);
@@ -101,10 +114,12 @@ class ListaControllerTest {
 	}
 
 	@Test
+	@Order(4)
 	public void crearLista_listaCreada_entoncesDevuelve_status201() throws ClientProtocolException, IOException {
 
-		HttpPost request = new HttpPost("http://localhost:8090/api/v1/usuarios/listas");
+		HttpPost request = new HttpPost(ToDoListApplication.TEST_HOST + "api/v1/usuarios/listas");
 		request.setHeader("Content-type", "application/json");
+		request.setHeader("Authorization", retrieveUtil.creaToken().getToken());
 		request.setEntity(retrieveUtil.retrieveStringEntity(creaListaCreateRequestDTO()));
 
 		HttpResponse response = HttpClientBuilder.create().build().execute(request);
@@ -113,17 +128,17 @@ class ListaControllerTest {
 
 	}
 
-	private Lista listaExistenteEnBaseDatos() {
-		Lista lista = new Lista();
-		lista.setIdLista(1);
-		lista.setTituloLista("Trabajo");
+	@Test
+	@Order(5)
+	public void eliminaLista_listaEliminada_entoncesDevuelve_status204() throws ClientProtocolException, IOException {
 
-		Usuario usuario = new Usuario();
-		usuario.setIdUsuario(1);
+		HttpDelete request = new HttpDelete(
+				ToDoListApplication.TEST_HOST + "api/v1/listas/" + listaExistenteEnBaseDatos.getIdLista());
+		request.setHeader("Authorization", retrieveUtil.creaToken().getToken());
 
-		lista.setUsuario(usuario);
+		HttpResponse response = HttpClientBuilder.create().build().execute(request);
 
-		return lista;
+		assertEquals(204, response.getStatusLine().getStatusCode());
 
 	}
 

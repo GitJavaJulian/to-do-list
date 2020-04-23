@@ -11,37 +11,43 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import todolist.ToDoListApplication;
-import todolist.dto.UsuarioResponseDTO;
-import todolist.dto.UsuarioUpdateRequestDTO;
-import todolist.dto.UsuariosCreateRequestDTO;
-import todolist.dto.UsuariosResponseDTO;
+import todolist.domain.dto.UsuarioResponseDTO;
+import todolist.domain.dto.UsuarioUpdateRequestDTO;
+import todolist.domain.dto.UsuariosCreateRequestDTO;
+import todolist.domain.dto.UsuariosResponseDTO;
 import todolist.test.utils.RetrieveUtil;
 
 @SpringBootTest
+@TestMethodOrder(OrderAnnotation.class)
 class UsuarioControllerTest {
 
 	@Autowired
 	private RetrieveUtil retrieveUtil;
 
-	long idUsuarioExisteEnBase = 1;
-	String mailUsuarioExisteEnBase = "lapunzinajulian@gmail.com";
+	private long idUsuarioExisteEnBase = 1;
+	private String mailUsuarioExisteEnBase = "lapunzinajulian@gmail.com";
 
 	@Test
+	@Order(1)
 	public void devuelveUsuario_idUsuarioExiste_entoncesDevuelve_status200_JSON_DTO()
 			throws ClientProtocolException, IOException {
 
-		HttpUriRequest request = new HttpGet("http://localhost:8090/api/v1/usuarios/" + idUsuarioExisteEnBase);
+		HttpUriRequest request = new HttpGet(
+				ToDoListApplication.TEST_HOST + "api/v1/usuarios/" + idUsuarioExisteEnBase);
+		request.setHeader("Authorization", retrieveUtil.creaToken().getToken());
 
 		HttpResponse response = HttpClientBuilder.create().build().execute(request);
 
@@ -55,10 +61,12 @@ class UsuarioControllerTest {
 	}
 
 	@Test
+	@Order(2)
 	public void devuelveUsuarios_usuariosExisten_entoncesDevuelve_status200_JSON_listDTO()
 			throws ClientProtocolException, IOException {
 
-		HttpUriRequest request = new HttpGet("http://localhost:8090/api/v1/usuarios");
+		HttpUriRequest request = new HttpGet(ToDoListApplication.TEST_HOST + "api/v1/usuarios");
+		request.setHeader("Authorization", retrieveUtil.creaToken().getToken());
 
 		HttpResponse response = HttpClientBuilder.create().build().execute(request);
 
@@ -72,23 +80,13 @@ class UsuarioControllerTest {
 	}
 
 	@Test
-	public void eliminaUsuario_usuariosEliminado_entoncesDevuelve_status204()
-			throws ClientProtocolException, IOException {
-
-		HttpDelete request = new HttpDelete("http://localhost:8090/api/v1/usuarios/" + idUsuarioExisteEnBase);
-
-		HttpResponse response = HttpClientBuilder.create().build().execute(request);
-
-		assertEquals(204, response.getStatusLine().getStatusCode());
-
-	}
-
-	@Test
+	@Order(4)
 	public void actualizaUsuario_usuarioActualizado_entoncesDevuelve_status201()
 			throws ClientProtocolException, IOException {
 
-		HttpPut request = new HttpPut("http://localhost:8090/api/v1/usuarios/" + idUsuarioExisteEnBase);
+		HttpPut request = new HttpPut(ToDoListApplication.TEST_HOST + "api/v1/usuarios/" + idUsuarioExisteEnBase);
 		request.setHeader("Content-type", "application/json");
+		request.setHeader("Authorization", retrieveUtil.creaToken().getToken());
 		request.setEntity(retrieveUtil.retrieveStringEntity(creaUsuarioUpdateRequestDTO()));
 
 		HttpResponse response = HttpClientBuilder.create().build().execute(request);
@@ -98,15 +96,16 @@ class UsuarioControllerTest {
 	}
 
 	@Test
-	public void crearUsuario_usuarioCreado_entoncesDevuelve_status201() throws ClientProtocolException, IOException {
+	@Order(5)
+	public void eliminaUsuario_usuariosEliminado_entoncesDevuelve_status204()
+			throws ClientProtocolException, IOException {
 
-		HttpPost request = new HttpPost("http://localhost:8090/api/v1/usuarios");
-		request.setHeader("Content-type", "application/json");
-		request.setEntity(retrieveUtil.retrieveStringEntity(creaUsuariosCreateRequestDTO()));
+		HttpDelete request = new HttpDelete(ToDoListApplication.TEST_HOST + "api/v1/usuarios/" + idUsuarioExisteEnBase);
+		request.setHeader("Authorization", retrieveUtil.creaToken().getToken());
 
 		HttpResponse response = HttpClientBuilder.create().build().execute(request);
 
-		assertEquals(201, response.getStatusLine().getStatusCode());
+		assertEquals(204, response.getStatusLine().getStatusCode());
 
 	}
 
@@ -124,7 +123,10 @@ class UsuarioControllerTest {
 		UsuariosCreateRequestDTO usuariosCreateRequestDTO = new UsuariosCreateRequestDTO();
 		usuariosCreateRequestDTO.setNombreUsuario("nombre_nuevo");
 		usuariosCreateRequestDTO.setMailUsuario("mail_nuevo");
+		usuariosCreateRequestDTO.setUsername("username_nuevo");
+		usuariosCreateRequestDTO.setPassword("pass_nueva");
 
 		return usuariosCreateRequestDTO;
 	}
+
 }

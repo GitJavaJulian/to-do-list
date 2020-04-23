@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import todolist.dto.ListaCreateRequestDTO;
-import todolist.dto.ListaResponseDTO;
-import todolist.dto.ListaUpdateRequestDTO;
-import todolist.dto.ListasResponseDTO;
+import todolist.domain.dto.ListaCreateRequestDTO;
+import todolist.domain.dto.ListaResponseDTO;
+import todolist.domain.dto.ListaUpdateRequestDTO;
+import todolist.domain.dto.ListasResponseDTO;
 import todolist.service.ListaService;
 
 @RestController
